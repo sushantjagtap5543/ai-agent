@@ -15,6 +15,11 @@ const App: React.FC = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'crew' | 'interpreter'>('crew');
+  const [status, setStatus] = useState<{ backend: string; ollama: string; models: any[] }>({ 
+    backend: 'checking', 
+    ollama: 'checking',
+    models: []
+  });
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -24,6 +29,25 @@ const App: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get('/api/status');
+        setStatus({
+          backend: response.data.backend,
+          ollama: response.data.ollama,
+          models: response.data.models || []
+        });
+      } catch (error) {
+        setStatus({ backend: 'offline', ollama: 'offline', models: [] });
+      }
+    };
+    
+    checkStatus();
+    const interval = setInterval(checkStatus, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -60,7 +84,18 @@ const App: React.FC = () => {
     <div className="main-container">
       <div className="glass-panel">
         <header className="header">
-          <h1>AI Agent Orchestrator</h1>
+          <div className="title-group">
+            <h1>AI Agent Orchestrator</h1>
+            <div className="status-indicators">
+              <span className={`status-dot ${status.backend}`}>Backend</span>
+              <span className={`status-dot ${status.ollama}`}>Ollama</span>
+              {status.models.length > 0 && (
+                <span className="model-badge">
+                  {status.models[0].name.split(':')[0]}
+                </span>
+              )}
+            </div>
+          </div>
           <div className="mode-selector">
             <button 
               className={`mode-btn ${mode === 'crew' ? 'active' : ''}`}
