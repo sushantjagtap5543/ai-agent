@@ -15,9 +15,13 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install core infra one-by-one to avoid resolver loops
+RUN pip install --no-cache-dir fastapi uvicorn requests python-dotenv pydantic==2.4.0
+
+# Install the heavy agents
+# We split them to avoid pip resolver backtracking issues
+RUN pip install --no-cache-dir crewai
+RUN pip install --no-cache-dir open-interpreter
 
 # Copy project
 COPY . .
@@ -25,5 +29,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run the application
+# Run the application (shell form for robustness or exec form with explicit strings)
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

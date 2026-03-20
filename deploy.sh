@@ -32,18 +32,20 @@ if [ -d "ai-agent" ]; then
     git pull
 else
     echo "🔗 Cloning repository..."
-    # Replace with your actual repository URL
     git clone https://github.com/sushantjagtap5543/ai-agent.git
     cd ai-agent
 fi
 
 # 5. Start services
 echo "🏗️ Building and starting containers..."
-docker-compose up -d --build
+sudo docker-compose down --remove-orphans
+sudo docker-compose up -d --build
 
 # 6. Pull Ollama model
 echo "🧠 Pulling Llama 3 model into Ollama..."
-docker exec -it ollama ollama pull llama3
+# Wait for Ollama to be ready
+sleep 10
+sudo docker exec -it ollama ollama pull llama3
 
 echo "✅ Deployment complete! Your AI Agent is running."
 echo "Frontend: http://$(curl -s ifconfig.me)"
