@@ -97,14 +97,27 @@ Refer to [docs/lightsail_deployment.md](./docs/lightsail_deployment.md) for a de
 
 ---
 
-## 🛠️ Configuration
+## 🔌 Port Mapping & Networking
 
-Edit `.env` (or environment variables in `docker-compose.yml`) to customize:
+To ensure the platform functions correctly, the following ports must be open in your firewall (especially on AWS Lightsail Networking tab):
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `OLLAMA_HOST` | URL of the Ollama server | `http://ollama:11434` |
-| `APP_PORT` | Port for the backend | `8000` |
+| Service    | Internal Port | External Port | Protocol | Purpose                |
+|------------|---------------|---------------|----------|------------------------|
+| **Frontend** | 80            | **80**        | HTTP     | User Interface         |
+| **Backend**  | 8000          | **8000**      | HTTP     | REST API Service       |
+| **Ollama**   | 11434         | **11434**     | HTTP     | LLM Inference Engine   |
+
+> [!IMPORTANT]
+> On AWS Lightsail, go to **Networking -> IPv4 Firewall** and add rules for Custom TCP **8000** and **11434** if you wish to access the API or Ollama directly from outside.
+
+---
+
+## 🛠️ Configuration & Environment
+
+The system is pre-configured for Docker. Edit `docker-compose.yml` to adjust:
+
+- `OLLAMA_HOST`: Set to `http://ollama:11434` (Internal Docker DNS).
+- `BACKEND_URL`: The frontend proxies `/api/*` to the backend container automatically.
 
 ---
 

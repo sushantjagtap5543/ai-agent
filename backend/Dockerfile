@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install core infra one-by-one to avoid resolver loops
-RUN pip install --no-cache-dir fastapi uvicorn requests python-dotenv pydantic==2.4.0
+RUN pip install --no-cache-dir fastapi uvicorn requests python-dotenv pydantic==2.4.0 langchain_community langchain_openai
 
 # Install the heavy agents
 # We split them to avoid pip resolver backtracking issues

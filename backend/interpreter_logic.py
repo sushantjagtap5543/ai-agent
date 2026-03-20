@@ -1,10 +1,9 @@
 import interpreter
 import os
 
-# Configure OpenInterpreter
-# If using local ollama, we can point it there
-interpreter.llm.model = "ollama/llama3"
-interpreter.llm.api_base = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+# Configure OpenInterpreter (Modern Syntax)
+interpreter.model = "ollama/llama3"
+interpreter.api_base = os.getenv("OLLAMA_HOST", "http://ollama:11434")
 
 def run_interpreter(user_task: str):
     # Setup for non-interactive execution

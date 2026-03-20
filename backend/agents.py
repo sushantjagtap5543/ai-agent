@@ -1,12 +1,9 @@
-from crewai import Agent, Task, Crew, Process
-from langchain_community.llms import Ollama
+from crewai import Agent, Task, Crew, Process, LLM
 import os
 
-# Initialize Ollama LLM
-# Assuming Ollama is running on the host or in a specific container named 'ollama'
-# For local dev without docker, use 'localhost'
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-llm = Ollama(model="llama3", base_url=OLLAMA_HOST)
+# Initialize LLM
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+llm = LLM(model="ollama/llama3", base_url=OLLAMA_HOST)
 
 def run_crew(user_task: str):
     # Define Agents

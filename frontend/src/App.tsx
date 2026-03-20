@@ -61,7 +61,7 @@ const App: React.FC = () => {
       const endpoint = mode === 'crew' ? '/api/run-crew' : '/api/run-interpreter';
       const response = await axios.post(endpoint, {
         task: input
-      });
+      }, { timeout: 600000 });
 
       const botMessage: Message = { 
         text: response.data.result, 
